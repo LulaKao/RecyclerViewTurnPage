@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int img;
 
         // add data
-        for(int i = 0; i < 22; i++){
+        for(int i = 0; i < 27; i++){
             if(i < 12){
                 img = R.drawable.example;
             } else if(i < 24){
@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LinearLayoutManager linearLayoutManager = new GridLayoutManager(MainActivity.this,4); // 設定一行四個項目
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL); // 設定垂直方向
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
 
         // 計算有幾頁
         double page_double = itemList.size() / 12.0;
@@ -70,7 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 設定要顯示的內容區間
         list_start = (current_page - 1) * 12;
-        list_end = current_page * 12;
+        if(itemList.size() < current_page * 12) list_end = itemList.size();
+        else list_end = current_page * 12;
 
         // set Adapter
         adapter = new ItemAdapter(MainActivity.this, itemList.subList(list_start,list_end));
@@ -81,21 +81,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if(view.getId() == R.id.btn_next){ // 下一頁
 
-            System.out.println("=== DDF itemList = " + itemList);
+            System.out.println("=== DDF itemList.size() = " + itemList.size());
 
-//            if(current_page < page_int){
-//                current_page++;
-//
-//                // 設定要顯示的內容區間
-//                list_start = (current_page - 1) * 12;
-//                list_end = current_page * 12;
-//
-//                // 刷新 adapter
-//                adapter.notifyItemRangeChanged(list_start,12);
-//
-//            } else{
-//                Toast.makeText(this, "沒有更多頁", Toast.LENGTH_SHORT).show();
-//            }
+            if(current_page < page_int){
+                current_page++;
+
+                // 設定要顯示的內容區間
+                list_start = (current_page - 1) * 12;
+                if(itemList.size() < current_page * 12) list_end = itemList.size();
+                else list_end = current_page * 12;
+
+                // 刷新 adapter
+                if(adapter != null) adapter = null;
+                adapter = new ItemAdapter(MainActivity.this, itemList.subList(list_start,list_end));
+                recyclerView.setAdapter(adapter);
+
+            } else{
+                Toast.makeText(this, "沒有更多頁", Toast.LENGTH_SHORT).show();
+            }
 
         } else { // 上一頁
             if(current_page > 1){
