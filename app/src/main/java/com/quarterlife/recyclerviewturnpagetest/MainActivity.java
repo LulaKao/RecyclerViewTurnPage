@@ -50,26 +50,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             itemList.add(new ItemModel(i + 1, img, 2, 630, 10,"PinkBear01"));
         }
 
-        // set LinearLayoutManager
+        // 設置 LinearLayoutManager
         LinearLayoutManager linearLayoutManager = new GridLayoutManager(MainActivity.this,4); // 設定一行四個項目
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL); // 設定垂直方向
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(linearLayoutManager); // 綁定 recyclerView 和 linearLayoutManager
 
         // 計算有幾頁
         double total_page_double = itemList.size() / 12.0;
         total_page_int = (int) Math.ceil(total_page_double); // 無條件進位，並轉成 int
 
-        // 設定顯示的分頁數字
-        txt_page.setText(current_page + "/" + total_page_int);
-
-        // 設定要顯示的內容區間
-        list_start = (current_page - 1) * 12;
-        if(itemList.size() < current_page * 12) list_end = itemList.size();
-        else list_end = current_page * 12;
-
-        // set Adapter
-        adapter = new ItemAdapter(MainActivity.this, itemList.subList(list_start,list_end));
-        recyclerView.setAdapter(adapter);
+        // 設置資料
+        setData();
     }
 
     @Override
@@ -77,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(view.getId() == R.id.btn_next){ // 下一頁
             if(current_page < total_page_int){ // 若還有下一頁
                 current_page++;
-                refreshData(); // 刷新資料
+                setData(); // 設置資料
             } else { // 若沒有下一頁
                 Toast.makeText(this, "已到最底頁", Toast.LENGTH_SHORT).show();
             }
@@ -85,25 +76,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else { // 上一頁
             if(current_page > 1){ // 若還有上一頁
                 current_page--;
-                refreshData(); // 刷新資料
+                setData(); // 設置資料
             }else { // 若沒有上一頁
                 Toast.makeText(this, "已到最前頁", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void refreshData() {
+    private void setData() {
         // 設定要顯示的內容區間
         list_start = (current_page - 1) * 12;
         if(itemList.size() < current_page * 12) list_end = itemList.size();
         else list_end = current_page * 12;
 
-        // 刷新 adapter
+        // 設定 adapter
         if(adapter != null) adapter = null;
         adapter = new ItemAdapter(MainActivity.this, itemList.subList(list_start,list_end));
         recyclerView.setAdapter(adapter);
 
-        // 刷新分頁的數字
+        // 設定要顯示的分頁數字
         txt_page.setText(current_page + "/" + total_page_int);
     }
 }
