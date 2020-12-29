@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int img;
 
         // add data
-        for(int i = 0; i < 27; i++){
+        for(int i = 0; i < 33; i++){
             if(i < 12){
                 img = R.drawable.example;
             } else if(i < 24){
@@ -80,33 +80,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btn_next){ // 下一頁
-
-            System.out.println("=== DDF itemList.size() = " + itemList.size());
-
-            if(current_page < page_int){
+            if(current_page < page_int){ // 若還有下一頁
                 current_page++;
-
-                // 設定要顯示的內容區間
-                list_start = (current_page - 1) * 12;
-                if(itemList.size() < current_page * 12) list_end = itemList.size();
-                else list_end = current_page * 12;
-
-                // 刷新 adapter
-                if(adapter != null) adapter = null;
-                adapter = new ItemAdapter(MainActivity.this, itemList.subList(list_start,list_end));
-                recyclerView.setAdapter(adapter);
-
-            } else{
-                Toast.makeText(this, "沒有更多頁", Toast.LENGTH_SHORT).show();
+                refreshData(); // 刷新資料
+            } else { // 若沒有下一頁
+                Toast.makeText(this, "已到最底頁", Toast.LENGTH_SHORT).show();
             }
 
         } else { // 上一頁
-            if(current_page > 1){
+            if(current_page > 1){ // 若還有上一頁
                 current_page--;
-            } else{
+                refreshData(); // 刷新資料
+            }else { // 若沒有上一頁
                 Toast.makeText(this, "已到最前頁", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void refreshData() {
+        // 設定要顯示的內容區間
+        list_start = (current_page - 1) * 12;
+        if(itemList.size() < current_page * 12) list_end = itemList.size();
+        else list_end = current_page * 12;
+
+        // 刷新 adapter
+        if(adapter != null) adapter = null;
+        adapter = new ItemAdapter(MainActivity.this, itemList.subList(list_start,list_end));
+        recyclerView.setAdapter(adapter);
 
         // 刷新分頁的數字
         txt_page.setText(current_page + "/" + page_int);
