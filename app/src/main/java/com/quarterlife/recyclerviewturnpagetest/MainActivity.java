@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<ItemModel> itemList = new ArrayList<>();
     private TextView txt_page;
     private LinearLayout btn_previous, btn_next;
-    private int current_page = 1, page_int = 0, list_start = 0, list_end = 0;
+    private int current_page = 1, total_page_int = 0, list_start = 0, list_end = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +56,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // 計算有幾頁
-        double page_double = itemList.size() / 12.0;
-        page_int = (int) Math.ceil(page_double); // 無條件進位，並轉成 int
-
-        System.out.println("=== DDF itemList.size() =  " + itemList.size());
-        System.out.println("=== DDF page_double =  " + page_double);
-        System.out.println("=== DDF page_int Math.ceil =  " + page_int);
-        System.out.println("=== DDF 有 " + page_int + " 頁");
+        double total_page_double = itemList.size() / 12.0;
+        total_page_int = (int) Math.ceil(total_page_double); // 無條件進位，並轉成 int
 
         // 設定顯示的分頁數字
-        txt_page.setText(current_page + "/" + page_int);
+        txt_page.setText(current_page + "/" + total_page_int);
 
         // 設定要顯示的內容區間
         list_start = (current_page - 1) * 12;
@@ -80,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btn_next){ // 下一頁
-            if(current_page < page_int){ // 若還有下一頁
+            if(current_page < total_page_int){ // 若還有下一頁
                 current_page++;
                 refreshData(); // 刷新資料
             } else { // 若沒有下一頁
@@ -109,6 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(adapter);
 
         // 刷新分頁的數字
-        txt_page.setText(current_page + "/" + page_int);
+        txt_page.setText(current_page + "/" + total_page_int);
     }
 }
